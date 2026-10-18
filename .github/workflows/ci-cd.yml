@@ -1,0 +1,81 @@
+name: CI-CD (Frontend → Netlify | Backend → Render)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # 1️⃣ Build & Test Backend and Frontends
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Backend
+      - name: Install backend dependencies
+        working-directory: ./server
+        run: npm ci
+
+      - name: Build backend (if needed)
+        working-directory: ./server
+        run: npm run build || echo "No backend build script"
+
+      # Frontend
+      - name: Install frontend dependencies
+        working-directory: ./client
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: ./client
+        run: npm run build
+
+  # 2️⃣ Deploy frontend to Netlify
+  deploy-frontend:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Deploy frontend to Netlify
+        run: |
+         cd client
+         npm install --include=dev
+         export VITE_DEV_API="${{ secrets.VITE_DEV_API }}" \
+         export VITE_RAPID_API_KEY="${{ secrets.VITE_RAPID_API_KEY }}" \
+         npm run build
+         npx netlify deploy \
+          --dir=dist \
+          --prod \
+          --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} \
+          --site ${{ secrets.NETLIFY_SITE_ID }}
+
+  # 3️⃣ Deploy backend to Render
+  deploy-backend:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Trigger Render Deploy
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          api-key: ${{ secrets.RENDER_API_KEY }}
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}
+          wait-for-success: true

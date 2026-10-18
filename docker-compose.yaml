@@ -1,0 +1,68 @@
+# version: "3.8"
+
+# services:
+#   mongo:
+#     image: mongo:latest
+#     container_name: gymmaster-mongo
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - mongo-data:/data/db
+
+#   backend:
+#     build: ./server
+#     image: abhi790/gymmaster-backend:latest
+#     container_name: gymmaster-backend
+#     ports:
+#       - "5000:5000"
+#     env_file:
+#       - ./server/.env
+#     depends_on:
+#       - mongo
+
+#   frontend:
+#     build: ./client
+#     image: abhi790/gymmaster-frontend:latest
+#     container_name: gymmaster-frontend
+#     ports:
+#       - "5173:80"
+#     depends_on:
+#       - backend
+
+# volumes:
+#   mongo-data:
+
+
+version: "3.8"
+services:
+  backend:
+    build:
+      context: ./server
+    ports:
+      - "5000:5000"
+    # environment:
+    #   - MONGO_URI=mongodb://mongo:27017/gymdb
+    env_file:
+      - ./server/.env  
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./client
+    ports:
+      - "5173:80"
+    env_file:
+      - ./client/.env
+    depends_on:
+      - backend
+
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
