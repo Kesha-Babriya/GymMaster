@@ -55,7 +55,6 @@ https://github.com/user-attachments/assets/a75b562c-6fbd-41dc-ae74-ac51ee858002
 
  
 <h2 style="margin-top:20px;font-size:20px">Quick Start</h2>
-<p>Fork the repository - <a href="https://github.com/abhishekrajput-web/GymMaster.git">https://github.com/abhishekrajput-web/GymMaster</a></p>
 
 # GYM MANAGEMENT APP 
 
@@ -68,19 +67,9 @@ This is a simple GYM Management application that fetches and displays details of
 - Handles loading states and error messages gracefully.
 - Allows users to navigate back to the list of Exercies.
 
-## Installation
 
-1. Clone the repository:
 
-```bash
-git clone <https://github.com/abhishekrajput-web/gym-master>
-```
- 
-<h2 style="margin-top:20px;font-size:20px">Author Info</h2>
 
-<p>Author Name - Abhishek Rajput</p>
-<p>Author Email - abhishekrajputcr7@gmail.com</p>
-<p>Author Linkedin - <a href="https://linkedin.com/in/abhishek-rajput7/">Linkedin Profile</a></p>
  
 
 
