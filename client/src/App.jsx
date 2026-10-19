@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Header, Footer, ScrollButton, PrivateRoute, AdminRoute, Modal } from "./components";
+import { Header, Footer, ScrollButton, PrivateRoute, AdminRoute } from "./components";
 import { Register, Login, ForgotPassword, Home, PlanSubscription, Error, Exercise, ExerciseDetail, Profile, UserDashBoard, PlanDetail, AdminDashBoard, CreatePlan, UpdatePlan, Plans, SubscriberList, UserList, FavouriteExercises, PlanDetails, PlanFullDetail, ContactUs, TrainerDetails, Feedback, Feedbacks, FeedbackList} from "./pages";
 // import PlanFullDetail from './pages/User/planFullDetail';
 import { Toaster } from 'react-hot-toast';
@@ -15,7 +15,6 @@ const App = () => {
       <ScrollButton />
       <Header />
       <Toaster />
-      <Modal/>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/register' element={<Register />} />

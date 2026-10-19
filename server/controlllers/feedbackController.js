@@ -46,7 +46,7 @@ const createFeedback = async (req, res) => {
 
 const getFeedbackById = async (req, res) => {
   try {
-    const feedback = await Feedback.findById(req.user._id).populate('user'); 
+    const feedback = await Feedback.findById(req.params.id).populate('user'); 
 
     if (!feedback) {
       return res.json({ message: 'Feedback not found', success:false });

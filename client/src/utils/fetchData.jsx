@@ -1,7 +1,12 @@
+const hasRapidApiKey = !!(
+  import.meta.env.VITE_RAPID_API_KEY &&
+  import.meta.env.VITE_RAPID_API_KEY !== "undefined"
+);
+
 const exerciseOptions = {
   method: "GET",
   headers: {
-    "X-RapidAPI-Key": import.meta.env.VITE_RAPID_API_KEY,
+    "X-RapidAPI-Key": import.meta.env.VITE_RAPID_API_KEY || "",
     "X-RapidAPI-Host": "exercisedb.p.rapidapi.com",
   },
 };
@@ -9,20 +14,28 @@ const exerciseOptions = {
 const youtubeExerciseOptions = {
   method: "GET",
   headers: {
-    "X-RapidAPI-Key": import.meta.env.VITE_RAPID_API_KEY,
+    "X-RapidAPI-Key": import.meta.env.VITE_RAPID_API_KEY || "",
     "X-RapidAPI-Host": "youtube-search-and-download.p.rapidapi.com",
   },
 };
 
 const fetchData = async (url, options) => {
-  const response = await fetch(url, options);
-  const data = await response.json();
-  // console.log(data);
-  return data;
+  try {
+    const apiKey = options?.headers?.["X-RapidAPI-Key"];
+    if (!apiKey) {
+      return null;
+    }
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      return null;
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return null;
+  }
 };
 
-const BASE_URL = import.meta.env.VITE_DEV_API;
-// const BASE_URL = "http://localhost:5000";
-// const BASE_URL="https://gym-master.onrender.com";
+const BASE_URL = import.meta.env.VITE_DEV_API || "http://localhost:5000";
 
-export { fetchData, exerciseOptions, youtubeExerciseOptions, BASE_URL };
+export { fetchData, exerciseOptions, youtubeExerciseOptions, BASE_URL, hasRapidApiKey };

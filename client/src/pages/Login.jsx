@@ -20,23 +20,35 @@ const Login = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
+    const trimmedEmail = email.trim().toLowerCase();
+    if (!trimmedEmail) {
+      toast.error("Please enter your email");
+      return;
+    }
+
+    if (!password) {
+      toast.error("Please enter your password");
+      return;
+    }
+
     try {
       const res = await axios.post(`${BASE_URL}/api/v1/auth/login`, {
-        email,
+        email: trimmedEmail,
         password,
       });
 
-      if (res && res.data.success) {
+      if (res && res.data && res.data.success) {
         toast.success(res.data.message);
         setAuth({ ...auth, user: res.data.user, token: res.data.token });
         localStorage.setItem("auth", JSON.stringify(res.data));
         navigate(location.state || "/");
       } else {
-        toast.error(res.data.message);
+        toast.error(res?.data?.message || "Login failed");
       }
     } catch (error) {
       console.log(error);
-      toast.error("Something went wrong");
+      const errorMsg = error?.response?.data?.message || "Something went wrong in login";
+      toast.error(errorMsg);
     }
   };
 

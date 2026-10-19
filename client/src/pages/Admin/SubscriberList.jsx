@@ -56,22 +56,28 @@ console.log(subscriber);
     <section className='pt-10 bg-gray-900'>
       <Heading name="Subscriber List" />
       <div className="container mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {subscriber.map((s, i) => (
-            <Subscription
-              key={i}
-              userImg={userImg}
-              userName={s.userName}
-              planName={s.plan.planName} 
-              planAmount={s.planAmount}
-              planType={s.planType}
-              createdAt={s.createdAt} 
-              planid={s.planId} 
-              subId={s._id} 
-              handleDelete={() => handleDelete(s._id)} 
-            />
-          ))}
-        </div>
+        {subscriber.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-gray-400 text-xl">No active subscriptions found.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {subscriber.map((s, i) => (
+              <Subscription
+                key={i}
+                userImg={userImg}
+                userName={s.userName}
+                planName={s.plan?.planName || "Plan Unavailable"} 
+                planAmount={s.planAmount}
+                planType={s.planType}
+                createdAt={s.createdAt} 
+                planid={s.plan?._id || s.planId} 
+                subId={s._id} 
+                handleDelete={() => handleDelete(s._id)} 
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

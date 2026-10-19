@@ -10,18 +10,17 @@ const planSchema = new mongoose.Schema({
     planName: {
         type: String,
         required: true,
+        unique: true
     },
 
     monthlyPlanAmount: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
 
     yearlyPlanAmount: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
 
     waterStations:{

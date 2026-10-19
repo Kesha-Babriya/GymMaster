@@ -36,7 +36,7 @@ router.put("/user-profile", requireSignIn, updateProfileController);
 router.get("/total-user", userCountController);
 
 // get users
-router.get("/get-all-users", getAllUsersController);
+router.get("/get-all-users", requireSignIn, isAdmin, getAllUsersController);
 
 router.get("/get-user-plan", requireSignIn, getSubscriptionByUser);
 

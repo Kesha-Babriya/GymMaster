@@ -1,5 +1,5 @@
 import express from 'express';
-import { requireSignIn } from '../Middlewares/authMiddleware.js';
+import { requireSignIn, isAdmin } from '../Middlewares/authMiddleware.js';
 import {
   getAllFeedbacks,
   createFeedback,
@@ -24,7 +24,7 @@ router.get('/getsingle-feedback/:id', requireSignIn, getFeedbackById);
 router.put('/update-feedback/:id', requireSignIn, updateFeedbackById);
 
 // DELETE - Delete Feedback by ID
-router.delete('/delete-feedback/:id', requireSignIn, deleteFeedbackById);
+router.delete('/delete-feedback/:id', requireSignIn, isAdmin, deleteFeedbackById);
 
 router.get("/total-feedback", feedbackCountController);
 

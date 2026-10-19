@@ -1,5 +1,6 @@
 import React,{useEffect} from 'react';
 import { fetchData, exerciseOptions } from '../utils/fetchData';
+import { fallbackExercises } from '../utils/fallbackExercises';
 import {exercisePng} from "../images";
 import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
@@ -11,17 +12,29 @@ import 'swiper/css/free-mode';
 const BodyPart = ({bodyParts, setBodyPart, bodyPart, setExercises }) => {
   useEffect(() => {
     const fetchExercisesData = async () => {
-    let exercisesData = [];
-    if(bodyPart === "all"){
-       exercisesData = await fetchData("https://exercisedb.p.rapidapi.com/exercises", exerciseOptions);
-    }
-    else{
-       exercisesData = await fetchData(`https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}`, exerciseOptions);
-    }
-    setExercises(exercisesData);
-    }
+      let exercisesData = null;
+      try {
+        if(bodyPart === "all"){
+          exercisesData = await fetchData("https://exercisedb.p.rapidapi.com/exercises", exerciseOptions);
+        } else {
+          exercisesData = await fetchData(`https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}`, exerciseOptions);
+        }
+      } catch (err) {
+        exercisesData = null;
+      }
+
+      if (Array.isArray(exercisesData) && exercisesData.length > 0) {
+        setExercises(exercisesData);
+      } else {
+        const filtered = bodyPart === "all"
+          ? fallbackExercises
+          : fallbackExercises.filter(ex => ex.bodyPart.toLowerCase() === bodyPart.toLowerCase());
+        setExercises(filtered);
+      }
+    };
+
     fetchExercisesData();
-  },[bodyPart]);
+  }, [bodyPart]);
 
 
   return (

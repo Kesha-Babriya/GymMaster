@@ -125,30 +125,48 @@ const PlanDetail = () => {
   },[])
 
 
-  if(allUserSubscription.length === 0){
-    return <h1 className=' text-3xl sm:text-5xl text-white flex justify-center items-center h-screen'>No Plan Choosen</h1>
+  if (loading) {
+    return <Loader />;
   }
 
-  if(loading){
-    return <Loader/>
+  if (allUserSubscription.length === 0) {
+    return (
+      <section className='pt-10 bg-gray-900 min-h-screen text-white text-center'>
+        <Heading name="Current User Plan"/>
+        <div className="container mx-auto px-6 py-20 flex flex-col items-center justify-center">
+          <h2 className='text-3xl sm:text-4xl font-bold mb-4'>No Active Plan</h2>
+          <p className="text-gray-400 mb-8 max-w-md">You do not have any active gym plan subscriptions at the moment.</p>
+          <Link to="/" className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-8 rounded-lg transition-all">
+            Browse Plans
+          </Link>
+        </div>
+      </section>
+    );
   }
 
   return (
     <section className='pt-10 bg-gray-900'>
-    <Heading name="Current User Plan"/>
-    <div className="container mx-auto px-6 py-20">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch">
-        {allUserSubscription.map((u,i) =>(
-          <Subscription userImg={userImg} userName={u.userName} planName={u.plan.planName} planAmount={u.planAmount} planType={u.planType} i={i} key={i} createdAt={u.createdAt} planid={u.plan._id}/>
-        ))}
+      <Heading name="Current User Plan"/>
+      <div className="container mx-auto px-6 py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch">
+          {allUserSubscription.map((u, i) => (
+            <Subscription
+              userImg={userImg}
+              userName={u.userName}
+              planName={u.plan?.planName || "Plan Unavailable"}
+              planAmount={u.planAmount}
+              planType={u.planType}
+              i={i}
+              key={i}
+              createdAt={u.createdAt}
+              planid={u.plan?._id}
+            />
+          ))}
+        </div>
       </div>
-
-
-
-    </div>
-  </section>
-  )
-}
+    </section>
+  );
+};
 
 export default PlanDetail;
 

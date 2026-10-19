@@ -8,9 +8,9 @@ router.post("/create-subscription", requireSignIn, createSubscriptionPlanControl
 
 router.put("/update-subscription/:id", requireSignIn, updateSubscriptionController);
 
-router.delete("/delete-subscription/:id", requireSignIn, deleteSubscriptionController);
+router.delete("/delete-subscription/:id", requireSignIn, isAdmin, deleteSubscriptionController);
 
-router.get("/getall-subscription", requireSignIn, getAllSubscriptionsController);
+router.get("/getall-subscription", requireSignIn, isAdmin, getAllSubscriptionsController);
 
 router.get("/get-subscription/:id", requireSignIn, getSubscriptionController);
 

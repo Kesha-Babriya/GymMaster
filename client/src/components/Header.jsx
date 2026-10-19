@@ -53,7 +53,7 @@ const Header = () => {
                 Feedback
               </Link>
             </li>
-            {auth?.user?.name === "admin" && (
+            {auth?.user?.role === 1 && (
               <li>
                 <Link to="/dashboard/admin/create-plane" className="text-white hover:text-yellow-400 transition-all duration-300">
                   Create Plan
@@ -64,7 +64,7 @@ const Header = () => {
 
           {auth?.user ? (
             <>
-              <Link to={auth.user.name === "admin" ? "/dashboard/admin" : "/dashboard/user"} className="text-white font-semibold hover:text-yellow-400 transition-all duration-300 capitalize">
+              <Link to={auth?.user?.role === 1 ? "/dashboard/admin" : "/dashboard/user"} className="text-white font-semibold hover:text-yellow-400 transition-all duration-300 capitalize">
                 {auth.user.name}
               </Link>
               <button onClick={handleLogout} className="text-white hover:text-yellow-400 transition-all duration-300">
@@ -103,7 +103,7 @@ const Header = () => {
                 Feedback
               </Link>
             </li>
-            {auth?.user?.name === "admin" && (
+            {auth?.user?.role === 1 && (
               <li>
                 <Link to="/dashboard/admin/create-plane" className="text-white hover:text-yellow-400 transition-all duration-300" onClick={() => setMobileMenuOpen(false)}>
                   Create Plan
@@ -112,7 +112,7 @@ const Header = () => {
             )}
             {auth?.user ? (
               <>
-                <Link to={auth.user.name === "admin" ? "/dashboard/admin" : "/dashboard/user"} className="text-white font-semibold hover:text-yellow-400 transition-all duration-300 capitalize" onClick={() => setMobileMenuOpen(false)}>
+                <Link to={auth?.user?.role === 1 ? "/dashboard/admin" : "/dashboard/user"} className="text-white font-semibold hover:text-yellow-400 transition-all duration-300 capitalize" onClick={() => setMobileMenuOpen(false)}>
                   {auth.user.name}
                 </Link>
                 <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="text-white hover:text-yellow-400 transition-all duration-300">

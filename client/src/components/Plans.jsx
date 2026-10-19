@@ -53,24 +53,30 @@ const Plans = () => {
       <Heading name="Trending Plans" />
              </div>
       <div className="container py-16 mx-auto px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {plans.map((p, i) => (
-             <div
-             key={i}
-             data-aos="zoom-in" 
-           >
-            <Plan
-              img={planImg1} 
-              alt={`plan-img-${i}`}
-              name={p.planName}
-              id={p._id}
-              monthlyPrice={p.monthlyPlanAmount}
-              yearlyPrice={p.yearlyPlanAmount}
-              key={i}
-            />
-             </div>
-          ))}
-        </div>
+        {plans.length === 0 ? (
+          <div className="text-center py-10 bg-white/10 backdrop-blur-sm rounded-xl max-w-xl mx-auto p-8 border border-white/20">
+            <p className="text-white text-xl font-medium">No plans currently published. Check back soon!</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {plans.map((p, i) => (
+              <div
+                key={i}
+                data-aos="zoom-in" 
+              >
+                <Plan
+                  img={planImg1} 
+                  alt={`plan-img-${i}`}
+                  name={p.planName}
+                  id={p._id}
+                  monthlyPrice={p.monthlyPlanAmount}
+                  yearlyPrice={p.yearlyPlanAmount}
+                  key={i}
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <div className="absolute inset-0 bg-gradient-to-b from-blue-800 to-yellow-300 opacity-80 pointer-events-none z-[-1]"></div>
 

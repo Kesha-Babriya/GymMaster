@@ -11,55 +11,73 @@ const registerController = async (req, res) => {
     try {
         const { name, email, password, city, contact } = req.body;
 
-        if (!name) {
-            return res.json({ message: "Name is Required" })
+        const trimmedName = typeof name === 'string' ? name.trim() : '';
+        const trimmedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+        const trimmedCity = typeof city === 'string' ? city.trim() : '';
+        const trimmedContact = typeof contact === 'string' ? contact.trim() : '';
+
+        if (!trimmedName) {
+            return res.status(400).json({ success: false, message: "Name is required" });
         }
 
-        if (!email) {
-            return res.json({ message: "Email is Required" })
+        if (!trimmedEmail) {
+            return res.status(400).json({ success: false, message: "Email is required" });
         }
 
-        if (!password) {
-            return res.json({ message: "Password is Required" })
+        if (!password || password.length < 8) {
+            return res.status(400).json({ success: false, message: "Password is required (minimum 8 characters)" });
         }
 
-        if (!city) {
-            return res.json({ message: "City is Required" })
+        if (!trimmedCity) {
+            return res.status(400).json({ success: false, message: "City is required" });
         }
 
-        if (!contact) {
-            return res.json({ message: "Contact is Required" })
+        if (!trimmedContact) {
+            return res.status(400).json({ success: false, message: "Contact phone is required" });
         }
 
-        const existingUser = await User.findOne({ email: email });
+        const existingUser = await User.findOne({ email: trimmedEmail });
 
         if (existingUser) {
             return res.status(200).json({
-                message: "Already a regsitered a user! please login",
-                success: true
+                message: "Email is already registered! Please login",
+                success: false
             });
         }
 
-        // create a new user or register new user
+        // create a new user or register new user with default regular role 0
         const hashedPassword = await hashPassword(password);
 
-        const user = await new User({ name: name, email: email, city: city, contact: contact, password: hashedPassword }).save();
-        res.status(200).json({
+        const user = await new User({
+            name: trimmedName,
+            email: trimmedEmail,
+            city: trimmedCity,
+            contact: trimmedContact,
+            password: hashedPassword,
+            role: 0
+        }).save();
+
+        res.status(201).json({
             success: true,
-            message: "user registered successfully",
-            user,
+            message: "User registered successfully",
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                city: user.city,
+                contact: user.contact,
+                role: user.role,
+            },
         });
 
     } catch (error) {
-        console.log(error);
+        console.error("Error in registration:", error.message);
         res.status(500).json({
             success: false,
-            message: "error in registration",
-            error
+            message: "Error in registration. Please try again.",
         });
     }
-
-}
+};
 
 const loginController = async (req, res) => {
     try {
@@ -102,7 +120,7 @@ const loginController = async (req, res) => {
                 city: user.city,
                 contact: user.contact,
                 // question:user.question,
-                // role:user.role,
+                role: user.role,
                 _id: user._id,
             },
             token,
@@ -125,46 +143,45 @@ const loginController = async (req, res) => {
 
 // forgotPassword controller
 const forgotPasswordController = async (req, res) => {
-
     try {
-        const { email, newPassword} = req.body;
+        const { email, newPassword } = req.body;
 
-        if (!email) {
-            return res.json({ message: "Email is required" });
+        const trimmedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+
+        if (!trimmedEmail) {
+            return res.status(400).json({ success: false, message: "Email is required" });
         }
         
-        if (!newPassword) {
-            return res.json({ message: "New Password is required" });
+        if (!newPassword || newPassword.length < 8) {
+            return res.status(400).json({ success: false, message: "New Password is required (minimum 8 characters)" });
         }
         
-        const user = await User.findOne({email});
+        const user = await User.findOne({ email: trimmedEmail });
 
         if (!user) {
-           return res.status(404).json({
-                message:"Wrong Email or Question",
-                success:false,
+            return res.status(404).json({
+                message: "No account found with this email",
+                success: false,
             });
         }
 
         const hashedPassword = await hashPassword(newPassword);
 
-        await User.findByIdAndUpdate(user._id, {password: hashedPassword});
+        await User.findByIdAndUpdate(user._id, { password: hashedPassword });
 
         res.status(200).json({
-            message:"password change successfully",
-            success:true,
+            message: "Password changed successfully. Please login.",
+            success: true,
         });
         
     } catch (error) {
-        console.log(error);
+        console.error("Error in forgotPassword:", error.message);
         res.status(500).json({
-            message:"something went wrong",
-            success:false,
-            error
+            message: "Something went wrong in password reset",
+            success: false,
         });
     }
-
-}
+};
 
 
 // update profile

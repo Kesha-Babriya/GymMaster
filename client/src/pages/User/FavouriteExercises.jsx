@@ -23,13 +23,22 @@ const FavouriteExercises = () => {
 
 
   if (cart.length === 0) {
-    return <h1 className=' text-3xl sm:text-5xl text-white flex justify-center items-center h-screen'>No Favourite Exercises</h1>
+    return (
+      <div className='flex flex-col justify-center items-center h-screen bg-gray-900 text-white gap-6'>
+        <h1 className='text-3xl sm:text-5xl font-bold'>No Favourite Exercises</h1>
+        <p className='text-gray-400'>You haven't saved any exercises to your favourites yet.</p>
+        <Link to="/exercise" className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-8 rounded-lg transition-all">
+          Explore Exercises
+        </Link>
+      </div>
+    );
   }
 
-
   return (
-    <section className='py-20 bg-gray-900'>
-      <h2 className='text-3xl md:text-4xl text-black font-medium text-center'>You Have {cart.length} <span className='text-red-500'>Favourite</span>  Exercise</h2>
+    <section className='py-20 bg-gray-900 text-white'>
+      <h2 className='text-3xl md:text-4xl text-white font-medium text-center'>
+        You Have {cart.length} <span className='text-yellow-400'>Favourite</span> {cart.length === 1 ? 'Exercise' : 'Exercises'}
+      </h2>
       <div className="container mx-auto px-2 py-28">
 
           <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5'>

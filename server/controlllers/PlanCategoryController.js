@@ -61,7 +61,7 @@ const createplanController = async (req, res) => {
         const existingPlan = await Plan.findOne({planName});
 
         if (existingPlan) {
-            return res.status(200).json({message:"plan already exist", success:true});
+            return res.status(200).json({ message: "Plan already exists with this name", success: false });
         }
 
 

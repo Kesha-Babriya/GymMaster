@@ -30,36 +30,45 @@ const Contact = () => {
   const createQuery = async (e) => {
     e.preventDefault();
 
-    if (!/^[A-Za-z ]+$/.test(name)) {
-      toast.error("Name must contain only alphabets");
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedCity = city.trim();
+    const trimmedPhone = phone.trim();
+    const trimmedMessage = message.trim();
+
+    if (!trimmedName || !/^[A-Za-z\s'-]{2,50}$/.test(trimmedName)) {
+      toast.error("Name must contain only alphabetic letters and spaces (2-50 characters)");
       return;
     }
 
-    if (!/^[A-Za-z ]+$/.test(city)) {
-      toast.error("City must contain only alphabets and spaces");
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(trimmedEmail)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    if (!trimmedCity || !/^[A-Za-z\s'-]{2,50}$/.test(trimmedCity)) {
+      toast.error("City must contain only alphabetic letters and spaces");
       return;
     }
 
     const phoneNumberPattern = /^(9|8|7|6)\d{9}$/;
-    if (!phoneNumberPattern.test(phone)) {
+    if (!phoneNumberPattern.test(trimmedPhone)) {
       toast.error("Phone number must start with 9, 8, 7, or 6 and contain exactly 10 digits");
       return;
     }
 
-    if (!/^[A-Za-z ]+$/.test(message)) {
-      toast.error("Message must contain only alphabets and spaces");
+    if (!trimmedMessage || trimmedMessage.length < 5) {
+      toast.error("Message must be at least 5 characters long");
       return;
     }
 
-    console.log(name, email, city, phone, message);
-
     try {
       const { data } = await axios.post(`${BASE_URL}/api/v1/contact/create-contact`, {
-        name,
-        email,
-        city,
-        phone,
-        message
+        name: trimmedName,
+        email: trimmedEmail,
+        city: trimmedCity,
+        phone: trimmedPhone,
+        message: trimmedMessage
       });
       console.log(data);
 

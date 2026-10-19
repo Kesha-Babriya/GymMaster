@@ -1,30 +1,55 @@
 import React, {useState, useEffect} from 'react';
 import {AiOutlineSearch} from "react-icons/ai";
 import { exerciseOptions, fetchData } from '../utils/fetchData';
+import { fallbackBodyParts, fallbackExercises } from '../utils/fallbackExercises';
 import BodyPart from './BodyPart';
+
 const SearchInput = ( {setExercises, bodyPart, setBodyPart  } ) => {
   const [search, setSearch] = useState('');
-  const [bodyParts, setBodyParts] = useState([]);
+  const [bodyParts, setBodyParts] = useState(fallbackBodyParts);
   
   useEffect(() => {
     const fetchBodypartsData = async () => {
-      const bodypartsData = await fetchData("https://exercisedb.p.rapidapi.com/exercises/bodyPartList", exerciseOptions);
-      setBodyParts(["all", ...bodypartsData]);
-    }
+      try {
+        const bodypartsData = await fetchData("https://exercisedb.p.rapidapi.com/exercises/bodyPartList", exerciseOptions);
+        if (Array.isArray(bodypartsData) && bodypartsData.length > 0) {
+          setBodyParts(["all", ...bodypartsData]);
+        } else {
+          setBodyParts(fallbackBodyParts);
+        }
+      } catch (err) {
+        setBodyParts(fallbackBodyParts);
+      }
+    };
     
     fetchBodypartsData();
   }, []);
   
   const handleSearch = async () => {
-    if(search){
-      const exercisesData = await fetchData("https://exercisedb.p.rapidapi.com/exercises", exerciseOptions);
-      const searchedExercises = exercisesData.filter((exercise) => exercise.name.toLowerCase().includes(search) || exercise.target.toLowerCase().includes(search) || exercise.equipment.toLowerCase().includes(search) || exercise.bodyPart.toLowerCase().includes(search) );
-      setSearch('');
-      setExercises(searchedExercises);
-      window.scrollTo({top:1500, left:100, behavior:"smooth"})
+    const q = search.trim().toLowerCase();
+    if (q) {
+      let exercisesData = null;
+      try {
+        exercisesData = await fetchData("https://exercisedb.p.rapidapi.com/exercises", exerciseOptions);
+      } catch (err) {
+        exercisesData = null;
       }
 
-  }
+      if (!Array.isArray(exercisesData)) {
+        exercisesData = fallbackExercises;
+      }
+
+      const searchedExercises = exercisesData.filter((exercise) => 
+        (exercise?.name && exercise.name.toLowerCase().includes(q)) || 
+        (exercise?.target && exercise.target.toLowerCase().includes(q)) || 
+        (exercise?.equipment && exercise.equipment.toLowerCase().includes(q)) || 
+        (exercise?.bodyPart && exercise.bodyPart.toLowerCase().includes(q))
+      );
+      setSearch('');
+      setExercises(searchedExercises);
+      window.scrollTo({top: 1500, left: 100, behavior: "smooth"});
+    }
+  };
 
   return (
     <section className='pt-32 '>

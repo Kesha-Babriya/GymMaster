@@ -5,17 +5,17 @@ import Subscription from "../models/Subscription.js";
 // protected routes token based
 const requireSignIn = async (req, res, next) => {
     try {
-        const decode = JWT.verify(req.headers.authorization, process.env.JWT_SECRET);
+        const token = req.headers.authorization;
+        if (!token) {
+            return res.status(401).json({ success: false, message: "Authorization token required" });
+        }
+        const decode = JWT.verify(token, process.env.JWT_SECRET);
         req.user = decode;
         next();
+    } catch (err) {
+        return res.status(401).json({ success: false, message: "Invalid or expired authorization token" });
     }
-
-    catch (err) {
-        console.log(err);
-        res.json(err);
-    }
-
-}
+};
 
 // admin access 
 const isAdmin = async (req, res, next) => {

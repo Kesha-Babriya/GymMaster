@@ -15,18 +15,17 @@ console.log(plans);
    //  handle get Plans
    const getAllPlans = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/api/v1/plan/getall-plan`);
       setLoading(true);
+      const res = await axios.get(`${BASE_URL}/api/v1/plan/getall-plan`);
 
       if (res.data && res.data.success) {
-        setplans(res.data.plans);
-        console.log(res.data);
+        setplans(res.data.plans || []);
       }
       setLoading(false); 
     }
     catch (err) {
       console.log(err);
-      toast.error("something went wong in getting plans");
+      toast.error("Something went wrong in getting plans");
       setLoading(false); 
     }
   }
@@ -39,18 +38,27 @@ console.log(plans);
     return <Loader/>
   }
 
-return (
-  <section className='bg-gray-900 pt-10'>
+  return (
+    <section className='bg-gray-900 pt-10'>
       <Heading name="Plans List"/>
-    <div className="container mx-auto px-6 py-10">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 items-center">
-        {plans.length && plans.map((p, i) => (
-         <Plan planName={p.planName} monthlyPlanAmount={p.monthlyPlanAmount} yearlyPlanAmount={p.yearlyPlanAmount} p_id={p._id} key={i}/>
-        ))}
+      <div className="container mx-auto px-6 py-10">
+        {plans.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-gray-400 text-xl mb-6">No gym plans found in the database.</p>
+            <Link to="/dashboard/admin/create-plane" className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all">
+              Create New Plan
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 items-center">
+            {plans.map((p, i) => (
+              <Plan planName={p.planName} monthlyPlanAmount={p.monthlyPlanAmount} yearlyPlanAmount={p.yearlyPlanAmount} p_id={p._id} key={i}/>
+            ))}
+          </div>
+        )}
       </div>
-    </div>
-  </section>
-)
+    </section>
+  )
 
 }
 

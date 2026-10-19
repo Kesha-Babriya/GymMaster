@@ -1,5 +1,5 @@
 import express from "express";
-// import {isAdmin, requireSignIn} from "../Middlewares/authMiddleware.js"
+import {isAdmin, requireSignIn} from "../Middlewares/authMiddleware.js";
 import {createContactController, contactCountController, getAllContactController} from "../controlllers/contactController.js"
 const router = express.Router();
 
@@ -10,7 +10,7 @@ router.post("/create-contact", createContactController);
 
 // router.delete("/delete-contact/:contactid", deleteplanController);
 
-router.get("/getall-contact", getAllContactController);
+router.get("/getall-contact", requireSignIn, isAdmin, getAllContactController);
 
 // router.get("/get-contact/:contactid", getPlanController);
 

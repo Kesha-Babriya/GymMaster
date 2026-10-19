@@ -20,53 +20,57 @@ const Register = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    if (!/^[A-Za-z]+$/.test(name)) {
-      toast.error("Name must contain only alphabets");
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedCity = city.trim();
+    const trimmedContact = contact.trim();
+
+    if (!trimmedName || !/^[A-Za-z\s'-]{2,50}$/.test(trimmedName)) {
+      toast.error("Name must contain only alphabetic letters and spaces (2-50 characters)");
       return;
     }
 
-    if (!/^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$/.test(email)) {
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(trimmedEmail)) {
       toast.error("Please enter a valid email address");
       return;
     }
 
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (!passwordPattern.test(password)) {
       toast.error("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number");
       return;
     }
 
-    if (!/^[A-Za-z ]+$/.test(city)) {
-      toast.error("City must contain only alphabets and spaces");
+    if (!trimmedCity || !/^[A-Za-z\s'-]{2,50}$/.test(trimmedCity)) {
+      toast.error("City must contain only alphabetic letters and spaces");
       return;
     }
 
     const phoneNumberPattern = /^(9|8|7|6)\d{9}$/;
-    if (!phoneNumberPattern.test(contact)) {
+    if (!phoneNumberPattern.test(trimmedContact)) {
       toast.error("Phone number must start with 9, 8, 7, or 6 and contain exactly 10 digits");
       return;
     }
 
-    console.log(name, password, email, city, contact);
-
     try {
       const res = await axios.post(`${BASE_URL}/api/v1/auth/register`, {
-        name,
+        name: trimmedName,
         password,
-        email,
-        city,
-        contact,
+        email: trimmedEmail,
+        city: trimmedCity,
+        contact: trimmedContact,
       });
 
-      if (res && res.data.success) {
+      if (res && res.data && res.data.success) {
         toast.success(res.data.message);
         navigate("/login");
       } else {
-        toast.error(res.data.message);
+        toast.error(res?.data?.message || "Registration failed");
       }
     } catch (error) {
       console.log(error);
-      toast.error("Something went wrong");
+      const errorMsg = error?.response?.data?.message || "Something went wrong in registration";
+      toast.error(errorMsg);
     }
   };
 

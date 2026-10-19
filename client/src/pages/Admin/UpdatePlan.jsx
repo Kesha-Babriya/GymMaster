@@ -83,23 +83,20 @@ const UpdatePlan = () => {
 
   const handleDelete = async () => {
     try {
-      let answer = window.prompt("are you sure you want to delete this product ?");
-      if(!answer) return;
-      const {data} = await axios.delete(`http://localhost:5000/api/v1/plan/delete-plan/${planid}`);
+      let answer = window.prompt("Are you sure you want to delete this plan?");
+      if (!answer) return;
+      const { data } = await axios.delete(`${BASE_URL}/api/v1/plan/delete-plan/${planid}`);
       if (data?.success) {
-      toast.success(`selected product is deleted`);
-      navigate("/dashboard/admin/plans");
-      console.log(data);
-     }
-     else{
-      toast.error(data?.message);
-     }
-      
+        toast.success(`Selected plan deleted successfully`);
+        navigate("/dashboard/admin/plans");
+      } else {
+        toast.error(data?.message || "Failed to delete plan");
+      }
     } catch (error) {
       console.log(error);
-      toast.error("something went wrong in deleting product")
+      toast.error("Something went wrong in deleting plan");
     }
-   }
+  };
   
   return (
     <section className='py-80 bg-gray-900'>

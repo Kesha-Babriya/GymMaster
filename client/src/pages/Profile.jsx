@@ -31,38 +31,33 @@ const Profile = () => {
   const updateUser = async (e) => {
     e.preventDefault();
 
-    if (!/^[A-Za-z]+$/.test(name)) {
-      toast.error("Name must contain only alphabets");
+    const trimmedName = name.trim();
+    const trimmedCity = city.trim();
+    const trimmedContact = contact.trim();
+
+    if (!trimmedName || !/^[A-Za-z\s'-]{2,50}$/.test(trimmedName)) {
+      toast.error("Name must contain only alphabetic letters and spaces (2-50 characters)");
       return;
     }
 
-
-
-    // Validation for City field
-    if (!/^[A-Za-z ]+$/.test(city)) {
-      toast.error("City must contain only alphabets and spaces");
+    if (!trimmedCity || !/^[A-Za-z\s'-]{2,50}$/.test(trimmedCity)) {
+      toast.error("City must contain only alphabetic letters and spaces");
       return;
     }
-    
-
 
     const phoneNumberPattern = /^(9|8|7|6)\d{9}$/;
-    if (!phoneNumberPattern.test(contact)) {
+    if (!phoneNumberPattern.test(trimmedContact)) {
       toast.error("Phone number must start with 9, 8, 7, or 6 and contain exactly 10 digits");
       return;
     }
 
-    console.log(name, email, city, contact);
-
     try {
-  
       const { data } = await axios.put(`${BASE_URL}/api/v1/auth/user-profile`, {
-        name,
+        name: trimmedName,
         email,
-        city,
-        contact,
-        // goal
-      })
+        city: trimmedCity,
+        contact: trimmedContact,
+      });
       console.log(data);
 
       if (data?.error) {

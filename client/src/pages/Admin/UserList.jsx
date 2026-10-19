@@ -37,11 +37,17 @@ const UserList = () => {
     <section className='pt-10 bg-gray-900'>
       <Heading name="User List" />
       <div className="container mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {users.map((u, i) => (
-            <User userImg={userImg} name={u.name} email={u.email} contact={u.contact} city={u.city} i={i} key={i}/>
-          ))}
-        </div>
+        {users.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-gray-400 text-xl">No users found in database.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {users.map((u, i) => (
+              <User userImg={userImg} name={u.name} email={u.email} contact={u.contact} city={u.city} i={i} key={i}/>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

@@ -61,11 +61,17 @@ const FeedbackList = () => {
     <section className='pt-10 bg-gray-900'>
       <Heading name="Feedback List" />
       <div className="container mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5">
-          {feedbacks.map((f, i) => (
-            <FeedbackComponent userImg={userImg} rating={f.rating} comment={f.message} name={f.user.name} date={f.date} i={i} key={i} feedbackId={f._id} handleDelete={() => handleDelete(f._id)} />
-          ))}
-        </div>
+        {feedbacks.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-gray-400 text-xl">No member feedbacks found in the database.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5">
+            {feedbacks.map((f, i) => (
+              <FeedbackComponent userImg={userImg} rating={f.rating} comment={f.message} name={f.user?.name || "Member"} date={f.date} i={i} key={i} feedbackId={f._id} handleDelete={() => handleDelete(f._id)} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

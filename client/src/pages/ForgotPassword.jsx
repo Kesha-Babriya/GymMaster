@@ -16,21 +16,33 @@ const ForgotPassword = () => {
   const submitPassword = async (e) => {
     e.preventDefault();
 
+    const trimmedEmail = email.trim().toLowerCase();
+    if (!trimmedEmail) {
+      toast.error("Please enter your registered email");
+      return;
+    }
+
+    if (!newPassword || newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters long");
+      return;
+    }
+
     try {
       const res = await axios.post(`${BASE_URL}/api/v1/auth/forgot-password`, {
-        email,
+        email: trimmedEmail,
         newPassword,
       });
 
-      if (res && res.data.success) {
+      if (res && res.data && res.data.success) {
         toast.success(res.data.message);
         navigate("/login");
       } else {
-        toast.error(res.data.message);
+        toast.error(res?.data?.message || "Failed to reset password");
       }
     } catch (error) {
       console.log(error);
-      toast.error("Something went wrong");
+      const errorMsg = error?.response?.data?.message || "Something went wrong in password reset";
+      toast.error(errorMsg);
     }
   };
 
@@ -45,7 +57,7 @@ const ForgotPassword = () => {
   return (
     <section className='bg-gray-900'>
       <div className='register-bg container mx-auto px-6'>
-        <form className='flex flex-col gap-4 items-center justify-center h-[90vh]' data-aos="fade-up">
+        <form className='flex flex-col gap-4 items-center justify-center h-[90vh]' data-aos="fade-up" onSubmit={submitPassword}>
           <h2 className='text-center text-2xl sm:text-4xl font-bold text-white' data-aos="zoom-in">RESET PASSWORD</h2>
           
           <Input
@@ -71,7 +83,6 @@ const ForgotPassword = () => {
           <button
             className='btn px-5 py-2 font-normal outline-none border border-white rounded-sm text-xl text-white hover:text-black hover:bg-white transition-all ease-in w-full max-w-[750px]'
             type='submit'
-            onClick={submitPassword}
             data-aos="slide-up"
           >
             Reset

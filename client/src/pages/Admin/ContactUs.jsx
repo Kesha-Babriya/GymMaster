@@ -37,13 +37,19 @@ const ContactUs = () => {
   return (
     <section className='pt-10 bg-gray-900'>
     <Heading name="Query List" />
-    <div className="container mx-auto px-6 py-10">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-        {contact.map((u, i) => (
-        <ContactComponent userImg={userImg} name={u.name} email={u.email} city={u.city} phone={u.phone} message={u.message} i={u._id} key={i} />
-        ))}
+      <div className="container mx-auto px-6 py-10">
+        {contact.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-gray-400 text-xl">No contact queries found in the database.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+            {contact.map((u, i) => (
+              <ContactComponent userImg={userImg} name={u.name} email={u.email} city={u.city} phone={u.phone} message={u.message} i={u._id} key={i} />
+            ))}
+          </div>
+        )}
       </div>
-    </div>
   </section>
   )
 }
