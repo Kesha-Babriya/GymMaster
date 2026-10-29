@@ -36,6 +36,27 @@ const fetchData = async (url, options) => {
   }
 };
 
-const BASE_URL = import.meta.env.VITE_DEV_API || "http://localhost:5000";
+// Determine API base URL dynamically based on environment mode and configuration
+const getBaseUrl = () => {
+  // In production builds (Vite build / Vercel), VITE_API_URL takes highest priority
+  if (import.meta.env.PROD) {
+    return (
+      import.meta.env.VITE_API_URL ||
+      import.meta.env.VITE_BACKEND_URL ||
+      import.meta.env.VITE_DEV_API ||
+      "http://localhost:5000"
+    );
+  }
+
+  // In development (npm run dev / localhost), prefer local development API
+  return (
+    import.meta.env.VITE_DEV_API ||
+    import.meta.env.VITE_API_URL ||
+    "http://localhost:5000"
+  );
+};
+
+const rawBaseUrl = getBaseUrl();
+const BASE_URL = (rawBaseUrl || "http://localhost:5000").trim().replace(/\/+$/, "");
 
 export { fetchData, exerciseOptions, youtubeExerciseOptions, BASE_URL, hasRapidApiKey };
