@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from "../context/cart";
 import { toast } from "react-hot-toast";
-import { hasRapidApiKey } from '../utils/fetchData';
 
 const ExerciseCard = ({ exercises, heading }) => {
   const { cart, setCart } = useCart();
@@ -33,11 +32,6 @@ const ExerciseCard = ({ exercises, heading }) => {
   return (
     <section className='pt-20 pb-28 bg-white' id='exercises'>
       <div className="px-7 sm:px-14">
-        {!hasRapidApiKey && (
-          <div className="mb-8 p-4 rounded-lg bg-yellow-50 border border-yellow-300 text-yellow-800 text-sm max-w-3xl mx-auto text-center">
-            <strong>Note:</strong> Displaying curated exercise library. To connect the full RapidAPI ExerciseDB catalog, add your key as <code>VITE_RAPID_API_KEY</code> in <code>client/.env</code>.
-          </div>
-        )}
         <h2 className='text-2xl sm:text-3xl md:text-5xl text-black capitalize text-center border-b-4 border-red-500 sm:border-none mb-14'>
           {heading ? `Similar ${heading} Exercises` : 'Showing Exercises'}
         </h2>
